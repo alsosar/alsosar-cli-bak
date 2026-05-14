@@ -2,7 +2,9 @@ param(
     [Parameter(Position = 0)]
     [string]$Destination,
 
-    [switch]$WhatIf
+    [switch]$WhatIf,
+
+    [switch]$Local
 )
 
 $ErrorActionPreference = 'Continue'
@@ -26,14 +28,25 @@ function Get-DownloadsPath {
     return $path
 }
 
-$folderDefs = @(
-    @{ Name = 'Desktop';   Path = [Environment]::GetFolderPath('Desktop') }
-    @{ Name = 'Documents'; Path = [Environment]::GetFolderPath('MyDocuments') }
-    @{ Name = 'Downloads'; Path = Get-DownloadsPath }
-    @{ Name = 'Pictures';  Path = [Environment]::GetFolderPath('MyPictures') }
-    @{ Name = 'Music';     Path = [Environment]::GetFolderPath('MyMusic') }
-    @{ Name = 'Videos';    Path = [Environment]::GetFolderPath('MyVideos') }
-)
+if ($Local) {
+    $folderDefs = @(
+        @{ Name = 'Desktop';   Path = Join-Path $HOME 'Desktop' }
+        @{ Name = 'Documents'; Path = Join-Path $HOME 'Documents' }
+        @{ Name = 'Downloads'; Path = Join-Path $HOME 'Downloads' }
+        @{ Name = 'Pictures';  Path = Join-Path $HOME 'Pictures' }
+        @{ Name = 'Music';     Path = Join-Path $HOME 'Music' }
+        @{ Name = 'Videos';    Path = Join-Path $HOME 'Videos' }
+    )
+} else {
+    $folderDefs = @(
+        @{ Name = 'Desktop';   Path = [Environment]::GetFolderPath('Desktop') }
+        @{ Name = 'Documents'; Path = [Environment]::GetFolderPath('MyDocuments') }
+        @{ Name = 'Downloads'; Path = Get-DownloadsPath }
+        @{ Name = 'Pictures';  Path = [Environment]::GetFolderPath('MyPictures') }
+        @{ Name = 'Music';     Path = [Environment]::GetFolderPath('MyMusic') }
+        @{ Name = 'Videos';    Path = [Environment]::GetFolderPath('MyVideos') }
+    )
+}
 
 $sourceFolders = @()
 foreach ($f in $folderDefs) {
@@ -71,12 +84,14 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 Write-Host "  User:    $([Environment]::UserName)"
 Write-Host "  Target:  $destPath"
-if ($WhatIf) { Write-Host "  Mode:    WHAT-IF (preview only)" -ForegroundColor Yellow }
-Write-Host "Env: PowerShell $($PSVersionTable.PSVersion)" | Out-File -FilePath $logFile
+$modeLabel = if ($Local) { 'LOCAL (no OneDrive)' } else { 'OneDrive-aware' }
+Write-Host "  Mode:    $modeLabel"
+if ($WhatIf) { Write-Host "  WHAT-IF: preview only (no files copied)" -ForegroundColor Yellow }
 "asosar-winbak v1.0 - Windows User Backup" | Out-File -FilePath $logFile
 "Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" | Out-File -FilePath $logFile -Append
 "User:    $([Environment]::UserName)" | Out-File -FilePath $logFile -Append
 "Target:  $destPath" | Out-File -FilePath $logFile -Append
+"Mode:    $modeLabel" | Out-File -FilePath $logFile -Append
 "-" * 60 | Out-File -FilePath $logFile -Append
 
 $i = 0

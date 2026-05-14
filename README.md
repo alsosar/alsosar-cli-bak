@@ -1,32 +1,45 @@
 # asosar-winbak
 
-Windows user data backup tool. Automatically detects OneDrive paths.
+Windows user data backup tool with automatic OneDrive path detection.
 
 ## Usage
 
 From **CMD** or **PowerShell**:
 
 ```
-backup D:\MyBackup
+backup D:\BackupFolder
 ```
 
-Or run without arguments to be prompted:
+Run without arguments to be prompted for a destination:
 
 ```
 backup
 ```
 
+**Force local paths** (skip OneDrive):
+
+```
+backup D:\BackupFolder -Local
+```
+
 Or double-click `backup.bat` in Explorer.
+
+## Flags
+
+| Flag     | Description                                          |
+|----------|------------------------------------------------------|
+| `-Local` | Use `C:\Users\%USERNAME%\Desktop` instead of OneDrive paths |
+| `-WhatIf`| Preview what would be backed up without copying      |
 
 ## What it backs up
 
-| Folder     | Path resolution                         |
-|------------|-----------------------------------------|
-| Desktop    | OneDrive\Desktop or %USERPROFILE%\Desktop |
-| Documents  | OneDrive\Documents or %USERPROFILE%\Documents |
-| Downloads  | Registry known folder or %USERPROFILE%\Downloads |
-| Pictures   | OneDrive\Pictures or %USERPROFILE%\Pictures |
-| Music      | OneDrive\Music or %USERPROFILE%\Music |
-| Videos     | OneDrive\Videos or %USERPROFILE%\Videos |
+| Folder     | Default (OneDrive-aware)        | With `-Local`                   |
+|------------|---------------------------------|---------------------------------|
+| Desktop    | OneDrive\Desktop                | %USERPROFILE%\Desktop           |
+| Documents  | OneDrive\Documents              | %USERPROFILE%\Documents         |
+| Downloads  | Registry or %USERPROFILE%\Downloads | %USERPROFILE%\Downloads     |
+| Pictures   | OneDrive\Pictures               | %USERPROFILE%\Pictures          |
+| Music      | OneDrive\Music                  | %USERPROFILE%\Music             |
+| Videos     | OneDrive\Videos                 | %USERPROFILE%\Videos            |
 
 Uses `robocopy` (built into Windows) for reliable copying with retries.
