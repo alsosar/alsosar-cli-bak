@@ -16,7 +16,7 @@ Run without arguments to be prompted for a destination:
 backup
 ```
 
-**Force local paths** (skip OneDrive):
+**Backup from local paths only:**
 
 ```
 backup D:\BackupFolder -Local
@@ -26,20 +26,28 @@ Or double-click `backup.bat` in Explorer.
 
 ## Flags
 
-| Flag     | Description                                          |
-|----------|------------------------------------------------------|
-| `-Local` | Use `C:\Users\%USERNAME%\Desktop` instead of OneDrive paths |
-| `-WhatIf`| Preview what would be backed up without copying      |
+| Flag     | Description                                              |
+|----------|----------------------------------------------------------|
+| `-Local` | Backup `C:\Users\%USERNAME%\Desktop` only (skip OneDrive) |
+| `-WhatIf`| Preview what would be backed up without copying          |
 
-## What it backs up
+## How it works
 
-| Folder     | Default (OneDrive-aware)        | With `-Local`                   |
-|------------|---------------------------------|---------------------------------|
-| Desktop    | OneDrive\Desktop                | %USERPROFILE%\Desktop           |
-| Documents  | OneDrive\Documents              | %USERPROFILE%\Documents         |
-| Downloads  | Registry or %USERPROFILE%\Downloads | %USERPROFILE%\Downloads     |
-| Pictures   | OneDrive\Pictures               | %USERPROFILE%\Pictures          |
-| Music      | OneDrive\Music                  | %USERPROFILE%\Music             |
-| Videos     | OneDrive\Videos                 | %USERPROFILE%\Videos            |
+By default, for each folder (Desktop, Documents, etc.) the tool detects **all available source locations**:
+
+| Folder     | OneDrive path (if active)    | Local path                    |
+|------------|------------------------------|-------------------------------|
+| Desktop    | `%USERPROFILE%\OneDrive\Desktop` | `%USERPROFILE%\Desktop`    |
+| Documents  | `%USERPROFILE%\OneDrive\Documents` | `%USERPROFILE%\Documents` |
+| Downloads  | (via registry)               | `%USERPROFILE%\Downloads`     |
+| Pictures   | `%USERPROFILE%\OneDrive\Pictures` | `%USERPROFILE%\Pictures`   |
+| Music      | (via registry)               | `%USERPROFILE%\Music`         |
+| Videos     | (via registry)               | `%USERPROFILE%\Videos`        |
+
+If both OneDrive and local paths exist for the same folder (e.g. files in both
+`OneDrive\Desktop` and `\Desktop`), **both** are backed up. The local copy
+appears as `Desktop (local)` in the destination.
+
+Use `-Local` to skip OneDrive and backup only from `%USERPROFILE%` paths.
 
 Uses `robocopy` (built into Windows) for reliable copying with retries.

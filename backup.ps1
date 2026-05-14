@@ -28,30 +28,42 @@ function Get-DownloadsPath {
     return $path
 }
 
-if ($Local) {
-    $folderDefs = @(
-        @{ Name = 'Desktop';   Path = Join-Path $HOME 'Desktop' }
-        @{ Name = 'Documents'; Path = Join-Path $HOME 'Documents' }
-        @{ Name = 'Downloads'; Path = Join-Path $HOME 'Downloads' }
-        @{ Name = 'Pictures';  Path = Join-Path $HOME 'Pictures' }
-        @{ Name = 'Music';     Path = Join-Path $HOME 'Music' }
-        @{ Name = 'Videos';    Path = Join-Path $HOME 'Videos' }
-    )
-} else {
-    $folderDefs = @(
-        @{ Name = 'Desktop';   Path = [Environment]::GetFolderPath('Desktop') }
-        @{ Name = 'Documents'; Path = [Environment]::GetFolderPath('MyDocuments') }
-        @{ Name = 'Downloads'; Path = Get-DownloadsPath }
-        @{ Name = 'Pictures';  Path = [Environment]::GetFolderPath('MyPictures') }
-        @{ Name = 'Music';     Path = [Environment]::GetFolderPath('MyMusic') }
-        @{ Name = 'Videos';    Path = [Environment]::GetFolderPath('MyVideos') }
-    )
+function Get-ActivePath {
+    param([string]$Folder)
+    switch ($Folder) {
+        'Desktop'   { return [Environment]::GetFolderPath('Desktop') }
+        'Documents' { return [Environment]::GetFolderPath('MyDocuments') }
+        'Downloads' { return Get-DownloadsPath }
+        'Pictures'  { return [Environment]::GetFolderPath('MyPictures') }
+        'Music'     { return [Environment]::GetFolderPath('MyMusic') }
+        'Videos'    { return [Environment]::GetFolderPath('MyVideos') }
+    }
 }
 
+$folderNames = @('Desktop', 'Documents', 'Downloads', 'Pictures', 'Music', 'Videos')
 $sourceFolders = @()
-foreach ($f in $folderDefs) {
-    if ($f.Path -and (Test-Path -LiteralPath $f.Path -PathType Container)) {
-        $sourceFolders += $f
+
+if ($Local) {
+    foreach ($folderName in $folderNames) {
+        $folderPath = "$HOME\$folderName"
+        if (Test-Path -LiteralPath $folderPath -PathType Container) {
+            $sourceFolders += @{ Name = $folderName; Path = $folderPath }
+        }
+    }
+} else {
+    foreach ($folderName in $folderNames) {
+        $active = Get-ActivePath $folderName
+        $localPath = "$HOME\$folderName"
+        $seen   = @{}
+
+        if ($active -and (Test-Path -LiteralPath $active -PathType Container)) {
+            $sourceFolders += @{ Name = $folderName; Path = $active }
+            $seen[$active.ToLower()] = $true
+        }
+        if ($localPath -and (Test-Path -LiteralPath $localPath -PathType Container) -and -not $seen[$localPath.ToLower()]) {
+            $label = if ($active -and $active -ne $localPath) { ' (local)' } else { '' }
+            $sourceFolders += @{ Name = "$folderName$label"; Path = $localPath }
+        }
     }
 }
 
@@ -84,10 +96,10 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 Write-Host "  User:    $([Environment]::UserName)"
 Write-Host "  Target:  $destPath"
-$modeLabel = if ($Local) { 'LOCAL (no OneDrive)' } else { 'OneDrive-aware' }
+$modeLabel = if ($Local) { 'Local only' } else { 'OneDrive + Local (all sources)' }
 Write-Host "  Mode:    $modeLabel"
 if ($WhatIf) { Write-Host "  WHAT-IF: preview only (no files copied)" -ForegroundColor Yellow }
-"asosar-winbak v1.0 - Windows User Backup" | Out-File -FilePath $logFile
+"asosar-winbak v1.1 - Windows User Backup" | Out-File -FilePath $logFile
 "Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" | Out-File -FilePath $logFile -Append
 "User:    $([Environment]::UserName)" | Out-File -FilePath $logFile -Append
 "Target:  $destPath" | Out-File -FilePath $logFile -Append
@@ -138,7 +150,7 @@ $duration = $endTime - $startTime
 $durationStr = "{0:hh}h {0:mm}m {0:ss}s" -f $duration
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Duration: $durationStr"
-Write-Host "  Folders:  $($sourceFolders.Count) of $($folderDefs.Count)"
+Write-Host "  Folders:  $($sourceFolders.Count)"
 if ($totalFailed -gt 0) {
     Write-Host "  Errors:   $totalFailed folder(s)" -ForegroundColor Red
 } else {
