@@ -79,7 +79,7 @@ if ($Local) {
 }
 
 if ($sourceFolders.Count -eq 0) {
-    Write-Host "No user folders found to backup." -ForegroundColor Red
+    Write-Host 'ERROR: Cannot backup "user folders" (all source paths are missing). Provide at least one valid user folder.' -ForegroundColor Red
     exit 1
 }
 
@@ -102,12 +102,11 @@ $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $logFile = Join-Path $destPath "backup-$timestamp.log"
 
 Show-AsosarBanner
-Write-Host "  Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
-Write-Host "  User:    $([Environment]::UserName)"
-Write-Host "  Target:  $destPath"
 $modeLabel = if ($Local) { 'Local only' } else { 'OneDrive + Local (all sources)' }
-Write-Host "  Mode:    $modeLabel"
-if ($WhatIf) { Write-Host "  WHAT-IF: preview only (no files copied)" -ForegroundColor Yellow }
+Write-Host "INFO: Starting backup to ""$destPath"" (session initialized)." -ForegroundColor Cyan
+Write-Host "INFO: Backing up as ""$([Environment]::UserName)"" (current user)."
+Write-Host "INFO: Using ""$modeLabel"" mode (backup scope)."
+if ($WhatIf) { Write-Host 'WARNING: Running in "WhatIf mode" (preview only). No files will be copied.' -ForegroundColor Yellow }
 "asosar-cli-back v1.1 - Windows User Backup" | Out-File -FilePath $logFile
 "Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" | Out-File -FilePath $logFile -Append
 "User:    $([Environment]::UserName)" | Out-File -FilePath $logFile -Append
@@ -122,11 +121,11 @@ foreach ($folder in $sourceFolders) {
     $folderDest = Join-Path $destPath $folder.Name
 
     if ($WhatIf) {
-        Write-Host "[$i/$($sourceFolders.Count)] $($folder.Name): $src -> $folderDest" -ForegroundColor Gray
+        Write-Host "INFO: Previewing ""$($folder.Name)"" (WhatIf mode). $src -> $folderDest" -ForegroundColor DarkGray
         continue
     }
 
-    Write-Host "[$i/$($sourceFolders.Count)] $($folder.Name)..." -ForegroundColor Yellow -NoNewline
+    Write-Host "INFO: Processing ""$($folder.Name)"" (folder $i of $($sourceFolders.Count)). Copying to destination." -ForegroundColor Yellow
 
     if (-not (Test-Path -LiteralPath $folderDest)) {
         New-Item -ItemType Directory -Path $folderDest -Force | Out-Null
@@ -141,32 +140,26 @@ foreach ($folder in $sourceFolders) {
     $exitCode = $LASTEXITCODE
 
     if ($exitCode -ge 8) {
-        Write-Host " ERRORS ($exitCode)" -ForegroundColor Red
+        Write-Host "ERROR: Copying ""$($folder.Name)"" (robocopy exit code $exitCode). Check the log for details." -ForegroundColor Red
         $totalFailed++
     } elseif ($exitCode -eq 0) {
-        Write-Host " up-to-date" -ForegroundColor Green
+        Write-Host "INFO: Skipping ""$($folder.Name)"" (no changes detected). All files are up-to-date." -ForegroundColor Green
     } else {
-        Write-Host " OK" -ForegroundColor Green
+        Write-Host "OK: Copied ""$($folder.Name)"" (completed). Files transferred successfully." -ForegroundColor Green
     }
 
     "" | Out-File -FilePath $logFile -Append
 }
 
-Write-Host "`n========================================" -ForegroundColor Cyan
-Write-Host "  Backup Complete!" -ForegroundColor Cyan
 $endTime = Get-Date
 $duration = $endTime - $startTime
 $durationStr = "{0:hh}h {0:mm}m {0:ss}s" -f $duration
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  Duration: $durationStr"
-Write-Host "  Folders:  $($sourceFolders.Count)"
+Write-Host "`nINFO: Backup completed in ""$durationStr"" (total time). $($sourceFolders.Count) folders processed." -ForegroundColor Cyan
 if ($totalFailed -gt 0) {
-    Write-Host "  Errors:   $totalFailed folder(s)" -ForegroundColor Red
+    Write-Host "ERROR: Errors in ""$totalFailed folder(s)"" (check log). Review ""$logFile"" for details." -ForegroundColor Red
 } else {
-    Write-Host "  Errors:   None" -ForegroundColor Green
+    Write-Host "OK: No errors reported (all folders completed). Backup finished successfully." -ForegroundColor Green
 }
-Write-Host "  Log:      $logFile"
-Write-Host "========================================"
 
 "" | Out-File -FilePath $logFile -Append
 "-" * 60 | Out-File -FilePath $logFile -Append
