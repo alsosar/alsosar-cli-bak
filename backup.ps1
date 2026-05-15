@@ -51,6 +51,8 @@ function Show-AsosarBanner {
     Write-Host "`n$banner" -ForegroundColor Cyan
 }
 
+Show-AsosarBanner
+
 $folderNames = @('Desktop', 'Documents', 'Downloads', 'Pictures', 'Music', 'Videos')
 $sourceFolders = @()
 
@@ -101,7 +103,6 @@ if (-not (Test-Path -LiteralPath $destPath)) {
 $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $logFile = Join-Path $destPath "backup-$timestamp.log"
 
-Show-AsosarBanner
 $modeLabel = if ($Local) { 'Local only' } else { 'OneDrive + Local (all sources)' }
 Write-Host "INFO: Starting backup to ""$destPath"" (session initialized)." -ForegroundColor Cyan
 Write-Host "INFO: Backing up as ""$([Environment]::UserName)"" (current user)."
