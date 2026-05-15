@@ -38,13 +38,13 @@ From **PowerShell 5+** (run as administrator if backing up system folders):
 
 ```powershell
 # With arguments
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/main/backup.ps1))) -Destination D:\Backup
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup
 
 # Preview mode
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/main/backup.ps1))) -WhatIf
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1))) -WhatIf
 
 # Local paths only
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/main/backup.ps1))) -Destination D:\Backup -Local
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup -Local
 ```
 
 This downloads the script into memory and runs it immediately — no file saved to disk.
