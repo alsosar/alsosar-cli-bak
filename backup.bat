@@ -1,5 +1,5 @@
 @echo off
-title asosar-cli-back - Windows User Backup
+title asosar-cli-bak - Windows User Backup
 
 powershell -ExecutionPolicy Bypass -NoProfile -File "%~dp0backup.ps1" %*
 

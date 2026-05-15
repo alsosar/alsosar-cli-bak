@@ -42,11 +42,13 @@ function Get-ActivePath {
 
 function Show-AsosarBanner {
     $banner = @'
-  ╔══════════════════════════════════════════╗
-  ║         asosar-cli-back                  ║
-  ║         Windows User Backup Tool         ║
-  ║                  v1.1                    ║
-  ╚══════════════════════════════════════════╝
+    _    ____   ___  ____    _    ____        ____ _     ___      ____    _    _  __
+   / \  / ___| / _ \/ ___|  / \  |  _ \      / ___| |   |_ _|    | __ )  / \  | |/ /
+  / _ \ \___ \| | | \___ \ / _ \ | |_) |____| |   | |    | |_____|  _ \ / _ \ | ' /
+ / ___ \ ___) | |_| |___) / ___ \|  _ <_____| |___| |___ | |_____| |_) / ___ \| . \
+/_/   \_\____/ \___/|____/_/   \_\_| \_\     \____|_____|___|    |____/_/   \_\_|\_\
+                                                                                    
+                        Windows User Backup Tool
 '@
     Write-Host "`n$banner" -ForegroundColor Cyan
 }
@@ -108,7 +110,7 @@ Write-Host "INFO: Starting backup to ""$destPath"" (session initialized)." -Fore
 Write-Host "INFO: Backing up as ""$([Environment]::UserName)"" (current user)."
 Write-Host "INFO: Using ""$modeLabel"" mode (backup scope)."
 if ($WhatIf) { Write-Host 'WARNING: Running in "WhatIf mode" (preview only). No files will be copied.' -ForegroundColor Yellow }
-"asosar-cli-back v1.1 - Windows User Backup" | Out-File -FilePath $logFile
+"asosar-cli-bak v1.1 - Windows User Backup" | Out-File -FilePath $logFile
 "Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" | Out-File -FilePath $logFile -Append
 "User:    $([Environment]::UserName)" | Out-File -FilePath $logFile -Append
 "Target:  $destPath" | Out-File -FilePath $logFile -Append
