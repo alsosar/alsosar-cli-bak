@@ -12,16 +12,16 @@ Windows user data backup tool with automatic OneDrive path detection.
 
 ## Usage
 
-From **CMD** or **PowerShell**:
-
-```
-backup D:\BackupFolder
-```
-
-Run without arguments to be prompted for a destination:
+Run with no arguments for interactive mode — choose Local or OneDrive+Local, then enter your destination:
 
 ```
 backup
+```
+
+From **CMD** or **PowerShell** with flags (non-interactive):
+
+```
+backup D:\BackupFolder
 ```
 
 **Backup from local paths only:**
