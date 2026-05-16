@@ -38,7 +38,7 @@ From **PowerShell 5+** (run as administrator if backing up system folders):
 
 ```powershell
 # Interactive mode (choose Local or OneDrive+Local, then enter destination)
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1)))
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/asosar-cli-bak/master/backup.ps1)))
 
 # With arguments (non-interactive)
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup
