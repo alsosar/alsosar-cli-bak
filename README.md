@@ -6,7 +6,7 @@
 /_/   \_\____/ \___/|____/_/   \_\_| \_\     \____|_____|___|    |____/_/   \_\_|\_\
 ```
 
-# asosar-cli-bak
+# alsosar-cli-bak
 
 Windows user data backup tool with automatic OneDrive path detection.
 
