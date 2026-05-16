@@ -1,4 +1,4 @@
-```
+ ```
     _    ____   ___  ____    _    ____        ____ _     ___      ____    _    _  __
    / \  / ___| / _ \/ ___|  / \  |  _ \      / ___| |   |_ _|    | __ )  / \  | |/ /
   / _ \ \___ \| | | \___ \ / _ \ | |_) |____| |   | |    | |_____|  _ \ / _ \ | ' /
@@ -41,13 +41,13 @@ From **PowerShell 5+** (run as administrator if backing up system folders):
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1)))
 
 # With arguments (non-interactive)
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup
 
 # Preview mode
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1))) -WhatIf
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/asosar-cli-bak/master/backup.ps1))) -WhatIf
 
 # Local paths only
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/asosar2195/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup -Local
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/asosar-cli-bak/master/backup.ps1))) -Destination D:\Backup -Local
 ```
 
 This downloads the script into memory and runs it immediately — no file saved to disk.
