@@ -43,16 +43,6 @@ Master Powershell Command
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1)))
 ```
 
-# With arguments (non-interactive)
-```
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1))) -Destination D:\Backup
-```
-
-# Preview mode
-```
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1))) -WhatIf
-```
-
 # Local paths only
 ```
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1))) -Destination D:\Backup -Local
@@ -65,7 +55,6 @@ This downloads the script into memory and runs it immediately — no file saved 
 | Flag     | Description                                              |
 |----------|----------------------------------------------------------|
 | `-Local` | Backup `C:\Users\%USERNAME%\Desktop` only (skip OneDrive) |
-| `-WhatIf`| Preview what would be backed up without copying          |
 
 ## How it works
 
