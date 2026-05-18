@@ -37,20 +37,24 @@ Or double-click `backup.bat` in Explorer.
 
 From **PowerShell 5+** (run as administrator if backing up system folders):
 
-``` Master Powershell Command
+Master Powershell Command
 # Interactive mode (choose Local or OneDrive+Local, then enter destination)
+```
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1)))
 ```
-```
+
 # With arguments (non-interactive)
+```
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1))) -Destination D:\Backup
 ```
-```
+
 # Preview mode
+```
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1))) -WhatIf
 ```
-```
+
 # Local paths only
+```
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/alsosar/alsosar-cli-bak/master/backup.ps1))) -Destination D:\Backup -Local
 ```
 
