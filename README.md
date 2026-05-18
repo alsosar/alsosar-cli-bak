@@ -87,3 +87,5 @@ appears as `Desktop (local)` in the destination.
 Use `-Local` to skip OneDrive and backup only from `%USERPROFILE%` paths.
 
 Uses `robocopy` (built into Windows) for reliable copying with retries.
+
+All output is wrapped in a decorative frame using `Write-Frame` (available as a reusable function in the script).
